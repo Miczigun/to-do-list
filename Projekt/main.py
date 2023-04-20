@@ -63,11 +63,11 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.geometry('854x480')
+        self.geometry('854x500')
         self.title('Projekt')
         self.resizable(False,False)
 
-        RegisterPage(self).place(relx=0.5 , rely=0.4, anchor="center")
+        LoginPage(self).place(relx=0.5 , rely=0.4, anchor="center")
 
 
 if __name__ == "__main__":
