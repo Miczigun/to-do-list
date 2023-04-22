@@ -19,18 +19,18 @@ class RegisterPage(ttk.Frame):
 
         self.loginLabel = ttk.Label(self, text="Username")
         self.loginLabel.pack(**options)
-        self.loginEntry = ttk.Entry(self, textvariable=self.login, width="30")
+        self.loginEntry = ttk.Entry(self, textvariable=self.login, width=30)
         self.loginEntry.pack()
         self.loginEntry.focus()
 
         self.passwordLabel = ttk.Label(self, text="Password")
         self.passwordLabel.pack(**options)
-        self.passwordEntry = ttk.Entry(self, textvariable=self.password, show="*", width="30")
+        self.passwordEntry = ttk.Entry(self, textvariable=self.password, show="*", width=30)
         self.passwordEntry.pack()
 
         self.passwordLabel = ttk.Label(self, text="Confirm Password")
         self.passwordLabel.pack(**options)
-        self.passwordEntry = ttk.Entry(self, textvariable=self.cpassword, show="*", width="30")
+        self.passwordEntry = ttk.Entry(self, textvariable=self.cpassword, show="*", width=30)
         self.passwordEntry.pack()
 
         self.loginButton = ttk.Button(self, text="Sign Up", command=self.create_user)
@@ -66,13 +66,13 @@ class LoginPage(ttk.Frame):
         self.password = tk.StringVar(value="")
         self.loginLabel = ttk.Label(self, text="Username")
         self.loginLabel.pack()
-        self.loginEntry = ttk.Entry(self, textvariable=self.login, width="30")
+        self.loginEntry = ttk.Entry(self, textvariable=self.login, width=30)
         self.loginEntry.pack(**options)
         self.loginEntry.focus()
 
         self.passwordLabel = ttk.Label(self, text="Password")
         self.passwordLabel.pack()
-        self.passwordEntry = ttk.Entry(self, textvariable=self.password, show="*", width="30")
+        self.passwordEntry = ttk.Entry(self, textvariable=self.password, show="*", width=30)
         self.passwordEntry.pack(**options)
 
         self.loginButton = ttk.Button(self, text="Sign In", command=self.checklogin)
@@ -107,7 +107,7 @@ class App(ttk.Window):
     def __init__(self):
         super().__init__(themename='superhero')
 
-        self.geometry('854x480')
+        self.geometry('854x500')
         self.title('Projekt')
         self.position_center()
 
@@ -127,6 +127,7 @@ class App(ttk.Window):
     def show_frame(self, name):
         frame = self.frames[name]
         frame.tkraise()
+
 
 
 if __name__ == "__main__":
