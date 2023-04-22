@@ -6,6 +6,7 @@ import re
 from user import User
 
 users = []
+user_id = None
 
 class RegisterPage(ttk.Frame):
 
@@ -61,8 +62,8 @@ class LoginPage(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         options = {"padx": 0, "pady": 5}
-        self.login = tk.StringVar()
-        self.password = tk.StringVar()
+        self.login = tk.StringVar(value="")
+        self.password = tk.StringVar(value="")
         self.loginLabel = ttk.Label(self, text="Username")
         self.loginLabel.pack()
         self.loginEntry = ttk.Entry(self, textvariable=self.login, width="30")
@@ -78,8 +79,26 @@ class LoginPage(ttk.Frame):
         self.loginButton.pack(**options)
 
     def checklogin(self):
-        print(self.login.get())
-        print(self.password.get())
+        login = self.login.get()
+        hashed_passwd = hashlib.sha256(self.password.get().encode('utf-8')).hexdigest()
+        for id, user in enumerate(users):
+            if user.login == login:
+                if user.password == hashed_passwd:
+                    user_id = id
+                    return app.show_frame("Menu")
+                else:
+                    return Messagebox.show_error(title="Password", message="Wrong password!")
+        return Messagebox.show_warning(title="Error", message="User doesn't exist")
+
+class Menu(ttk.Frame):
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        print(user_id)
+        self.leftframe = ttk.Frame(parent, width=250)
+
+
+
         
         
         
@@ -98,7 +117,7 @@ class App(ttk.Window):
         self.container.pack(expand=True)
 
         self.frames = {}
-        for F in (RegisterPage, LoginPage):
+        for F in (RegisterPage, LoginPage, Menu):
             page_name = F.__name__
             frame = F(parent=self.container)
             self.frames[page_name] = frame
