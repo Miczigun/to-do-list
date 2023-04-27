@@ -1,6 +1,7 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs.dialogs import Messagebox
+from tkinter import filedialog
 from PIL import Image, ImageTk
 import hashlib
 import re
@@ -130,14 +131,14 @@ class Menu(ttk.Frame):
         self.leftframe.pack_propagate(0)
         self.leftframe.pack(side='left', anchor='nw', fill='both', expand=True)
 
-        self.img = Image.open(user.icon).resize((30, 30))
+        self.img = Image.open(user.icon).resize((40, 40))
         self.img_tk = ImageTk.PhotoImage(self.img)
 
-        profile_icon = ttk.Button(self.leftframe, image=self.img_tk, bootstyle='link')
+        profile_icon = ttk.Button(self.leftframe, image=self.img_tk, bootstyle='link', command=self.add_icon)
         profile_icon.pack(**options)
 
         namelabel = ttk.Label(self.leftframe, text=user.login)
-        namelabel.pack(**options)
+        namelabel.pack()
 
         my_task = ttk.Button(self.leftframe, text="MyTasks", bootstyle='link', command=self.my_tasks)
         my_task.pack(**options)
@@ -150,6 +151,16 @@ class Menu(ttk.Frame):
 
         logout = ttk.Button(self.leftframe, text='Logout', bootstyle='link', command=self.logout)
         logout.pack(side='bottom', **options)
+
+    def add_icon(self):
+        filetypes = (('jpg files', '*.jpg'), ('png files', '*.png'), ('jpeg files', '*.jpeg'))
+        path = filedialog.askopenfilename(title='Pick a picture', initialdir='/', filetypes=filetypes)
+        if path:
+            user = users[user_id]
+            user.icon = path
+            self.leftframe.destroy()
+            self.rightframe.destroy()
+            self.load_left_frame()
 
     def my_tasks(self):
         self.rightframe.destroy()
@@ -214,6 +225,7 @@ class App(ttk.Window):
         self.geometry('854x480')
         self.title('Projekt')
         self.position_center()
+        self.resizable(False, False)
 
         self.container = ttk.Frame(self)
         self.container.grid_rowconfigure(0, weight=1)
