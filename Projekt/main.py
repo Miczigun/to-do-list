@@ -94,8 +94,13 @@ class Menu(ttk.Frame):
 
     def __init__(self, parent):
         super().__init__(parent)
-        print(user_id)
-        self.leftframe = ttk.Frame(parent, width=250)
+        self.leftframe = ttk.Frame(self, width=250)
+        self.leftframe.pack(fill='x', anchor='nw')
+        self.rightframe = ttk.Frame(self)
+        self.rightframe.pack(fill='x')
+        self.leftlabel = ttk.Label(self.leftframe, text="Miczi")
+        self.leftlabel.pack(side='left')
+
 
 
 
@@ -114,7 +119,7 @@ class App(ttk.Window):
         self.container = ttk.Frame(self)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
-        self.container.pack(expand=True)
+        self.container.pack()
 
         self.frames = {}
         for F in (RegisterPage, LoginPage, Menu):
