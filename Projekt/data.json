@@ -1,0 +1,72 @@
+[
+    {
+        "login": "Miczi",
+        "password": "3191fcfca9d234ff411f6043a529e201d8cb6236d8ac7bf1659904942fc997a1",
+        "tasks": [
+            {
+                "title": "Zycie",
+                "description": "jest ciezke",
+                "taskDate": "17/05/2023 16:18",
+                "taskFinished": false,
+                "taskDateFinish": null
+            },
+            {
+                "title": "blabla",
+                "description": "fsdAFDSAFASRT34",
+                "taskDate": "17/05/2023 16:18",
+                "taskFinished": false,
+                "taskDateFinish": null
+            },
+            {
+                "title": "GDFSGS",
+                "description": "GDSFGSD45G3532QTRGDAGFDS",
+                "taskDate": "17/05/2023 16:18",
+                "taskFinished": true,
+                "taskDateFinish": "17/05/2023 16:18"
+            },
+            {
+                "title": "5342543TAGAF",
+                "description": "FASDFDSATG34Q4365454GSDFGDASTGA",
+                "taskDate": "17/05/2023 16:18",
+                "taskFinished": true,
+                "taskDateFinish": "17/05/2023 16:18"
+            }
+        ],
+        "icon": "images\\Vintage-Crown-Logo-Royal-King-Queen-logo-Graphics-17244935-1.jpg"
+    },
+    {
+        "login": "Malczik",
+        "password": "3191fcfca9d234ff411f6043a529e201d8cb6236d8ac7bf1659904942fc997a1",
+        "tasks": [
+            {
+                "title": "afdet5353543",
+                "description": "gfdagfdgsdfbgsfhgsfhdfghfsd",
+                "taskDate": "17/05/2023 16:20",
+                "taskFinished": false,
+                "taskDateFinish": null
+            },
+            {
+                "title": "53425423523tgsdfsdafasf",
+                "description": "fsda34534535twfsadfg",
+                "taskDate": "17/05/2023 16:20",
+                "taskFinished": true,
+                "taskDateFinish": "17/05/2023 16:20"
+            },
+            {
+                "title": "45315fadsfsdaf",
+                "description": "fdasfggJKGYUJKHGKUJGIYJKH5KLH43KL523H4LJ5HLKNFGJKDLFGDAS",
+                "taskDate": "17/05/2023 16:20",
+                "taskFinished": true,
+                "taskDateFinish": "17/05/2023 16:20"
+            },
+            {
+                "title": "sgsd4556353245",
+                "description": "gfsdagfsd4564453674537247yfdghsdfgweas6t43t",
+                "taskDate": "17/05/2023 16:20",
+                "taskFinished": false,
+                "taskDateFinish": null
+            }
+        ],
+        "icon": "images\\queen-death-prince-charles-king-1621857724.jpg"
+    }
+]

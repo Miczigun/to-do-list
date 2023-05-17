@@ -8,6 +8,8 @@ from hashlib import sha256
 from datetime import datetime
 import re
 import json
+import os
+import shutil
 from user import User
 from task import Task
 
@@ -35,10 +37,10 @@ class RegisterPage(ttk.Frame):
         self.passwordEntry = ttk.Entry(self, textvariable=self.password, show="*", width=30)
         self.passwordEntry.pack()
 
-        self.passwordLabel = ttk.Label(self, text="Confirm Password")
-        self.passwordLabel.pack(**options)
-        self.passwordEntry = ttk.Entry(self, textvariable=self.cpassword, show="*", width=30)
-        self.passwordEntry.pack()
+        self.password_confirm_Label = ttk.Label(self, text="Confirm Password")
+        self.password_confirm_Label.pack(**options)
+        self.password_confirm_Entry = ttk.Entry(self, textvariable=self.cpassword, show="*", width=30)
+        self.password_confirm_Entry.pack()
 
         self.registerButton = ttk.Button(self, text="Sign Up", command=self.create_user)
         self.registerButton.pack(**options)
@@ -75,6 +77,9 @@ class RegisterPage(ttk.Frame):
         user = User(self.login.get(), hashed_passwd)
         users.append(user)
         Messagebox.show_info(parent=self, title="UserInfo", message="The user was successfully created")
+        self.loginEntry.delete(0, 'end')
+        self.passwordEntry.delete(0, 'end')
+        self.password_confirm_Entry.delete(0, 'end')
         app.show_frame("LoginPage")
 
 
@@ -111,6 +116,8 @@ class LoginPage(ttk.Frame):
         for id, user in enumerate(users):
             if user.login == login:
                 if user.password == hashed_passwd:
+                    self.loginEntry.delete(0,'end')
+                    self.passwordEntry.delete(0,'end')
                     global user_id
                     user_id = id
                     return app.show_frame("Menu")
@@ -129,6 +136,7 @@ class Menu(ttk.Frame):
         self.new_password = tk.StringVar(value="")
         self.confirm_new_password = tk.StringVar(value="")
         self.add_task_title = tk.StringVar(value="")
+        self.add_task_info = ""
 
         self.rightframe = ttk.Frame(self, bootstyle='secondary')
 
@@ -170,7 +178,10 @@ class Menu(ttk.Frame):
         path = filedialog.askopenfilename(title='Pick a picture', initialdir='/', filetypes=filetypes)
         if path:
             user = users[user_id]
-            user.icon = path
+            destination_directory = os.getcwd() + "\images"
+            filename = os.path.basename(path)
+            shutil.copy(path, destination_directory)
+            user.icon = fr'images\{filename}'
             self.leftframe.destroy()
             self.rightframe.destroy()
             self.load_left_frame()
@@ -184,31 +195,27 @@ class Menu(ttk.Frame):
         style = {"padx": 5, "pady": 5}
         scrolled_frame = ScrolledFrame(self.rightframe, autohide=True, bootstyle='secondary', scrollheight=1500)
         scrolled_frame.pack(fill='both', expand=True)
-        id_label = ttk.Label(scrolled_frame, text='ID', **self.style, font=('Helvetica', 15, 'bold'))
-        id_label.grid(column=0, row=0, **style)
         title_label = ttk.Label(scrolled_frame, text='Title', **self.style, font=('Helvetica', 15, 'bold'))
-        title_label.grid(column=1, row=0, **style)
+        title_label.grid(column=0, row=0, **style)
         date_label = ttk.Label(scrolled_frame, text='Date', **self.style, font=('Helvetica', 15, 'bold'))
-        date_label.grid(column=2, row=0, **style)
+        date_label.grid(column=1, row=0, **style)
 
         for id, task in enumerate(user.tasks):
             if not task.taskFinished:
-                id_label= ttk.Label(scrolled_frame, text=id+1, **self.style)
-                id_label.grid(column=0, row=id+1, **style)
                 title_label = ttk.Label(scrolled_frame, text=task.title, **self.style)
-                title_label.grid(column=1, row=id+1, **style)
+                title_label.grid(column=0, row=id+1, **style)
                 date_label = ttk.Label(scrolled_frame, text=task.taskDate, **self.style)
-                date_label.grid(column=2, row=id+1, **style)
+                date_label.grid(column=1, row=id+1, **style)
                 description_button = ttk.Button(scrolled_frame, text='Description',
                                                 command=lambda var=task.description:
                                                 Messagebox.ok(title='Description', message=var))
-                description_button.grid(column=3, row=id+1, **style)
+                description_button.grid(column=2, row=id+1, **style)
                 complete_button = ttk.Button(scrolled_frame, text='Complete', bootstyle='success',
                                              command=lambda var=id: self.complete_task(var))
-                complete_button.grid(column=4, row=id+1, **style)
+                complete_button.grid(column=3, row=id+1, **style)
                 delete_button = ttk.Button(scrolled_frame, text='Delete', bootstyle='danger',
                                            command=lambda var=id: self.delete_task(var))
-                delete_button.grid(column=5, row=id+1, **style)
+                delete_button.grid(column=4, row=id+1, **style)
 
     def complete_task(self, id):
         user = users[user_id]
@@ -225,32 +232,28 @@ class Menu(ttk.Frame):
         style = {"padx": 5, "pady": 5}
         scrolled_frame = ScrolledFrame(self.rightframe, autohide=True, bootstyle='secondary', scrollheight=1500)
         scrolled_frame.pack(fill='both', expand=True)
-        id_label = ttk.Label(scrolled_frame, text='ID', **self.style, font=('Helvetica', 15, 'bold'))
-        id_label.grid(column=0, row=0, **style)
         title_label = ttk.Label(scrolled_frame, text='Title', **self.style, font=('Helvetica', 15, 'bold'))
-        title_label.grid(column=1, row=0, **style)
+        title_label.grid(column=0, row=0, **style)
         date_label = ttk.Label(scrolled_frame, text='Start Date', **self.style, font=('Helvetica', 15, 'bold'))
-        date_label.grid(column=2, row=0, **style)
+        date_label.grid(column=1, row=0, **style)
         finish_date_label = ttk.Label(scrolled_frame, text='Finish Date', **self.style, font=('Helvetica', 15, 'bold'))
-        finish_date_label.grid(column=3, row=0, **style)
+        finish_date_label.grid(column=2, row=0, **style)
 
         for id, task in enumerate(user.tasks):
             if task.taskFinished:
-                id_label= ttk.Label(scrolled_frame, text=id+1, **self.style)
-                id_label.grid(column=0, row=id+1, **style)
                 title_label = ttk.Label(scrolled_frame, text=task.title, **self.style)
-                title_label.grid(column=1, row=id+1, **style)
+                title_label.grid(column=0, row=id+1, **style)
                 date_label = ttk.Label(scrolled_frame, text=task.taskDate, **self.style)
-                date_label.grid(column=2, row=id+1, **style)
+                date_label.grid(column=1, row=id+1, **style)
                 finish_date_label = ttk.Label(scrolled_frame, text=task.taskDateFinish, **self.style)
-                finish_date_label.grid(column=3, row=id+1, **style)
+                finish_date_label.grid(column=2, row=id+1, **style)
                 description_button = ttk.Button(scrolled_frame, text='Description',
                                                 command=lambda var=task.description:
                                                 Messagebox.ok(title='Description', message=var))
-                description_button.grid(column=4, row=id+1, **style)
+                description_button.grid(column=3, row=id+1, **style)
                 delete_button = ttk.Button(scrolled_frame, text='Delete', bootstyle='danger',
                                            command=lambda var=id: self.delete_task(var))
-                delete_button.grid(column=5, row=id+1, **style)
+                delete_button.grid(column=4, row=id+1, **style)
 
     def delete_task(self, id):
         user = users[user_id]
@@ -318,8 +321,8 @@ class Menu(ttk.Frame):
         title_label = ttk.Label(self.rightframe, text='Title', **self.style)
         title_label.pack(pady=5)
 
-        title_entry = ttk.Entry(self.rightframe, textvariable=self.add_task_title)
-        title_entry.pack()
+        self.title_entry = ttk.Entry(self.rightframe, textvariable=self.add_task_title)
+        self.title_entry.pack()
 
         description_label = ttk.Label(self.rightframe, text='Description', **self.style)
         description_label.pack(pady=5)
@@ -330,10 +333,19 @@ class Menu(ttk.Frame):
         add_button = ttk.Button(self.rightframe, text='Add', command=self.add)
         add_button.pack(pady=5)
 
+        info_label = ttk.Label(self.rightframe, text=self.add_task_info, **self.style)
+        info_label.pack(pady=5)
+
     def add(self):
         user = users[user_id]
+        if self.add_task_title.get() == "" or self.description_text.get("1.0", "end-1c") == "":
+            return Messagebox.show_info(title='Empty', message='Task must have title and description!')
         task = Task(self.add_task_title.get(), self.description_text.get("1.0", "end-1c"))
         user.tasks.append(task)
+        self.add_task_info = f"Task {self.add_task_title.get()} was added"
+        self.title_entry.delete(0, "end")
+        self.description_text.delete("1.0", "end-1c")
+        self.add_task()
 
     def logout(self):
         self.leftframe.destroy()
@@ -361,7 +373,7 @@ class App(ttk.Window):
             frame = F(parent=self.container)
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame("RegisterPage")
+        self.show_frame("LoginPage")
 
     def show_frame(self, name):
         frame = self.frames[name]
@@ -374,6 +386,16 @@ class App(ttk.Window):
 
 
 if __name__ == "__main__":
+    try:
+        with open('data.json', 'r') as f:
+            json_load_data = json.loads(f.read())
+            for data in json_load_data:
+                print(data)
+                temp_user = User("", "")
+                temp_user.load_data(data)
+                users.append(temp_user)
+    except IOError:
+        print("Error: could not read file data.json")
     app = App()
     app.mainloop()
     with open('data.json', 'w') as file:
