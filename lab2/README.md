@@ -1,1 +1,0 @@
-Tutaj umieszczać zajęcia laboratoryjne nr 2
