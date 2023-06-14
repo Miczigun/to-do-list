@@ -60,7 +60,7 @@ class RegisterPage(ttk.Frame):
             return Messagebox.show_info(title='Validation',
                                         message='Login must contain any uppercase and lowercase character')
 
-        if [True] == [user.login == self.login.get() for user in users]:
+        if any(self.login.get() == user.login for user in users):
             return Messagebox.show_info(title='Error', message='The user with this login already exists')
 
         if not re.search(p_pattern, self.password.get()):
@@ -142,18 +142,20 @@ class Menu(ttk.Frame):
 
     def load_left_frame(self):
         user = users[user_id]
-        print(user.json_object())
         options = {"pady": 5}
 
         self.leftframe = ttk.Frame(self, width=200, height=480)
-        self.leftframe.pack_propagate(0)
+        self.leftframe.pack_propagate(False)
         self.leftframe.pack(side='left', anchor='nw', fill='both', expand=True)
 
-        self.img = Image.open(user.icon).resize((40, 40))
-        self.img_tk = ImageTk.PhotoImage(self.img)
-
-        profile_icon = ttk.Button(self.leftframe, image=self.img_tk, bootstyle='link', command=self.add_icon)
-        profile_icon.pack(**options)
+        if os.path.isfile(user.icon):
+            self.img = Image.open(user.icon).resize((40, 40))
+            self.img_tk = ImageTk.PhotoImage(self.img)
+            profile_icon = ttk.Button(self.leftframe, image=self.img_tk, bootstyle='link', command=self.add_icon)
+            profile_icon.pack(**options)
+        else:
+            profile_icon = ttk.Button(self.leftframe, bootstyle='link', command=self.add_icon, text="Add photo")
+            profile_icon.pack(**options)
 
         namelabel = ttk.Label(self.leftframe, text=user.login)
         namelabel.pack()
@@ -173,6 +175,8 @@ class Menu(ttk.Frame):
         logout = ttk.Button(self.leftframe, text='Logout', bootstyle='link', command=self.logout)
         logout.pack(side='bottom', **options)
 
+
+
     def add_icon(self):
         filetypes = (('jpg files', '*.jpg'), ('png files', '*.png'), ('jpeg files', '*.jpeg'))
         path = filedialog.askopenfilename(title='Pick a picture', initialdir='/', filetypes=filetypes)
@@ -180,11 +184,13 @@ class Menu(ttk.Frame):
             user = users[user_id]
             destination_directory = os.getcwd() + "\images"
             filename = os.path.basename(path)
-            shutil.copy(path, destination_directory)
+            if not os.path.isfile(os.path.join(destination_directory, filename)):
+                shutil.copy(path, destination_directory)
             user.icon = fr'images\{filename}'
             self.leftframe.destroy()
             self.rightframe.destroy()
             self.load_left_frame()
+            self.my_tasks()
 
     def my_tasks(self):
         self.rightframe.destroy()
@@ -321,7 +327,7 @@ class Menu(ttk.Frame):
         title_label = ttk.Label(self.rightframe, text='Title', **self.style)
         title_label.pack(pady=5)
 
-        self.title_entry = ttk.Entry(self.rightframe, textvariable=self.add_task_title)
+        self.title_entry = ttk.Entry(self.rightframe, textvariable=self.add_task_title, width=40)
         self.title_entry.pack()
 
         description_label = ttk.Label(self.rightframe, text='Description', **self.style)
@@ -340,6 +346,8 @@ class Menu(ttk.Frame):
         user = users[user_id]
         if self.add_task_title.get() == "" or self.description_text.get("1.0", "end-1c") == "":
             return Messagebox.show_info(title='Empty', message='Task must have title and description!')
+        if len(self.add_task_title.get()) > 40:
+            return Messagebox.show_info(title='Length', message='Title can not be longer than 40 characters')
         task = Task(self.add_task_title.get(), self.description_text.get("1.0", "end-1c"))
         user.tasks.append(task)
         self.add_task_info = f"Task {self.add_task_title.get()} was added"
@@ -380,6 +388,7 @@ class App(ttk.Window):
         if name == "Menu":
             self.container.pack(side="left", anchor="nw", fill='y')
             frame.load_left_frame()
+            frame.my_tasks()
         else:
             self.container.pack(anchor='center', expand=True)
         frame.tkraise()
@@ -390,14 +399,14 @@ if __name__ == "__main__":
         with open('data.json', 'r') as f:
             json_load_data = json.loads(f.read())
             for data in json_load_data:
-                print(data)
                 temp_user = User("", "")
                 temp_user.load_data(data)
                 users.append(temp_user)
     except IOError:
         print("Error: could not read file data.json")
+
     app = App()
     app.mainloop()
     with open('data.json', 'w') as file:
-        json_data = json.dumps([user.json_object() for user in users], default=str, indent=4)
+        json_data = json.dumps([user.json_object() for user in users], indent=4)
         file.write(json_data)
