@@ -1,5 +1,6 @@
+# To do list
 A desktop application developed using Python that allows users to create and manage daily to-do lists. The application features an intuitive user interface, a personalized task hierarchy, and notifications that remind users of upcoming tasks.
-
+## Usage
 Login page:
 
 ![image](https://github.com/Miczigun/to-do-list/assets/92275832/fac22e7b-4ed4-4a02-8f45-bbe9f6441d84)
